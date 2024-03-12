@@ -110,8 +110,12 @@ const page = () => {
   }
 
   if (formData.installInstructions) {
-    markdown += `### How to Install and Run the Project\n${formData.installInstructions}\n\n`;
+    markdown += '### How to Install and Run the Project\n\n';
+    markdown += '```shell\n'; // Opening code block for shell/command-line
+    markdown += formData.installInstructions + '\n';
+    markdown += '```\n\n'; // Closing code block
   }
+  
 
   if (formData.howToUse) {
     markdown += `### How to Use the Project\n${formData.howToUse}\n\n`;
