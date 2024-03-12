@@ -63,22 +63,42 @@ const page = () => {
   const generateMarkdown = () => {
     let markdown = `# ${formData.title}\n\n`;
     markdown += `## ${formData.subtitle}\n\n`;
-
+  
     markdown += '### Work\n';
     formData.work.forEach((workItem, index) => {
-      markdown += `- **Project Name ${index + 1}:** ${workItem.projectName}\n`;
-      markdown += `  - **Project Link:** ${workItem.projectLink}\n`;
+      if (workItem.projectName && workItem.projectLink) {
+        markdown += `- **Project Name ${index + 1}:** ${workItem.projectName}\n`;
+        markdown += `  - **Project Link:** ${workItem.projectLink}\n`;
+      }
     });
-
-    markdown += `### Frameworks, courses etc.\n${formData.frameworks}\n\n`;
-    markdown += `### Got something to say? Contact me at\n${formData.contactEmail}\n\n`;
-    markdown += `### Portfolio Link\n[${formData.portfolioLink}](${formData.portfolioLink})\n\n`;
-    markdown += `### About Me\n${formData.aboutMe}\n\n`;
-    markdown += `### Resume Link\n[${formData.resumeLink}](${formData.resumeLink})\n\n`;
-    markdown += `### Funny Statement\n${formData.funnyStatement}\n\n`;
-
+  
+    if (formData.frameworks) {
+      markdown += `### Frameworks, courses etc.\n${formData.frameworks}\n\n`;
+    }
+  
+    if (formData.contactEmail) {
+      markdown += `### Got something to say? Contact me at\n${formData.contactEmail}\n\n`;
+    }
+  
+    if (formData.portfolioLink) {
+      markdown += `### Portfolio Link\n[${formData.portfolioLink}](${formData.portfolioLink})\n\n`;
+    }
+  
+    if (formData.aboutMe) {
+      markdown += `### About Me\n${formData.aboutMe}\n\n`;
+    }
+  
+    if (formData.resumeLink) {
+      markdown += `### Resume Link\n[${formData.resumeLink}](${formData.resumeLink})\n\n`;
+    }
+  
+    if (formData.funnyStatement) {
+      markdown += `### Funny Statement\n${formData.funnyStatement}\n\n`;
+    }
+  
     return markdown;
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
