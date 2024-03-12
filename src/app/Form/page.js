@@ -96,7 +96,36 @@ const page = () => {
       markdown += `### Funny Statement\n${formData.funnyStatement}\n\n`;
     }
   
-    return markdown;
+  // New fields
+  if (formData.projectTitle) {
+    markdown += `### Project's Title\n${formData.projectTitle}\n\n`;
+  }
+
+  if (formData.projectDescription) {
+    markdown += `### Project Description\n${formData.projectDescription}\n\n`;
+  }
+
+  if (formData.tableOfContents) {
+    markdown += `### Table of Contents (Optional)\n${formData.tableOfContents}\n\n`;
+  }
+
+  if (formData.installInstructions) {
+    markdown += `### How to Install and Run the Project\n${formData.installInstructions}\n\n`;
+  }
+
+  if (formData.howToUse) {
+    markdown += `### How to Use the Project\n${formData.howToUse}\n\n`;
+  }
+
+  if (formData.credits) {
+    markdown += `### Include Credits\n${formData.credits}\n\n`;
+  }
+
+  if (formData.liveProjectLink) {
+    markdown += `### Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+  }
+
+  return markdown;
   };
   
 
@@ -104,7 +133,6 @@ const page = () => {
     e.preventDefault();
     const generatedMarkdown = generateMarkdown();
     setMarkdownContent(generatedMarkdown);
-    // You can do something with the generated Markdown content here.
     console.log(generatedMarkdown);
   };
 
@@ -118,70 +146,98 @@ const page = () => {
       <h1 className="text-3xl font-bold mb-4">Create a Page</h1>
       <form onSubmit={handleSubmit}>
       <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700">
-            Subtitle
-          </label>
-          <input
-            type="text"
-            id="subtitle"
-            name="subtitle"
-            value={formData.subtitle}
-            onChange={handleChange}
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Work</label>
-          {formData.work.map((workItem, index) => (
-            <div key={index} className="mb-2">
-              <input
-                type="text"
-                name={`work-${index}-projectName`}
-                value={workItem.projectName}
-                onChange={handleChange}
-                placeholder={`Project Name ${index + 1}`}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="text"
-                name={`work-${index}-projectLink`}
-                value={workItem.projectLink}
-                onChange={handleChange}
-                placeholder={`Project Link ${index + 1}`}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveWorkItem(index)}
-                className="mt-2 p-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={handleAddWorkItem}
-            className="mt-2 p-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
-          >
-            Add Work Item
-          </button>
-        </div>
+  <label htmlFor="projectTitle" className="block text-sm font-medium text-gray-700">
+    Project Title
+  </label>
+  <input
+    type="text"
+    id="projectTitle"
+    name="projectTitle"
+    value={formData.projectTitle}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+  />
+</div>
+
+<div className="mb-4">
+  <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-700">
+    Project Description
+  </label>
+  <textarea
+    id="projectDescription"
+    name="projectDescription"
+    value={formData.projectDescription}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40" // Adjust height as needed
+  ></textarea>
+</div>
+
+<div className="mb-4">
+  <label htmlFor="tableOfContents" className="block text-sm font-medium text-gray-700">
+    Table of Contents (Optional)
+  </label>
+  <textarea
+    id="tableOfContents"
+    name="tableOfContents"
+    value={formData.tableOfContents}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40" // Adjust height as needed
+  ></textarea>
+</div>
+
+<div className="mb-4">
+  <label htmlFor="installInstructions" className="block text-sm font-medium text-gray-700">
+    How to Install and Run the Project
+  </label>
+  <textarea
+    id="installInstructions"
+    name="installInstructions"
+    value={formData.installInstructions}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40" // Adjust height as needed
+  ></textarea>
+</div>
+
+<div className="mb-4">
+  <label htmlFor="howToUse" className="block text-sm font-medium text-gray-700">
+    How to Use the Project
+  </label>
+  <textarea
+    id="howToUse"
+    name="howToUse"
+    value={formData.howToUse}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40" // Adjust height as needed
+  ></textarea>
+</div>
+
+<div className="mb-4">
+  <label htmlFor="credits" className="block text-sm font-medium text-gray-700">
+    Include Credits
+  </label>
+  <textarea
+    id="credits"
+    name="credits"
+    value={formData.credits}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40" // Adjust height as needed
+  ></textarea>
+</div>
+
+<div className="mb-4">
+  <label htmlFor="liveProjectLink" className="block text-sm font-medium text-gray-700">
+    Live Project Link
+  </label>
+  <input
+    type="url"
+    id="liveProjectLink"
+    name="liveProjectLink"
+    value={formData.liveProjectLink}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+  />
+</div>
+
         <div className="text-center">
           <button
             type="submit"
