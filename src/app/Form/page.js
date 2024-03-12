@@ -19,6 +19,7 @@ const page = () => {
     resumeLink: "",
     funnyStatement: "",
   });
+  const [showMarkdownEditor, setShowMarkdownEditor] = useState(false);
 
   const [markdownContent, setMarkdownContent] = useState("");
 
@@ -43,22 +44,6 @@ const page = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     // Handle file upload, you can use FormData or any other method to manage the file.
-  };
-
-  const handleAddWorkItem = () => {
-    setFormData({
-      ...formData,
-      work: [...formData.work, { projectName: "", projectLink: "" }],
-    });
-  };
-
-  const handleRemoveWorkItem = (index) => {
-    const updatedWork = [...formData.work];
-    updatedWork.splice(index, 1);
-    setFormData({
-      ...formData,
-      work: updatedWork,
-    });
   };
 
   const generateMarkdown = () => {
@@ -144,17 +129,26 @@ const page = () => {
     setMarkdownContent(generatedMarkdown);
     console.log(generatedMarkdown);
   };
+
   const [formFields, setFormFields] = useState([
-    { id: 'projectTitle', label: 'Project Title', isOpen: false },
-    { id: 'projectDescription', label: 'Project Description', isOpen: false },
-    { id: 'tableOfContents', label: 'Table of Contents', isOpen: false },
-    { id: 'installInstructions', label: 'How to Install and Run the Project', isOpen: false },
-    { id: 'howToUse', label: 'How to Use the Project', isOpen: false },
-    { id: 'credits', label: 'Include Credits', isOpen: false },
-    { id: 'liveProjectLink', label: 'Live Project Link', isOpen: false },
-    { id: 'imageUpload', label: 'Upload Images', isOpen: false },
-    { id: 'contributorName', label: 'Contributor Name', isOpen: false },
-    { id: 'contributorGitHub', label: 'Contributor GitHub Profile', isOpen: false },
+    { id: "projectTitle", label: "Project Title", isOpen: false },
+    { id: "projectDescription", label: "Project Description", isOpen: false },
+    { id: "tableOfContents", label: "Table of Contents", isOpen: false },
+    {
+      id: "installInstructions",
+      label: "How to Install and Run the Project",
+      isOpen: false,
+    },
+    { id: "howToUse", label: "How to Use the Project", isOpen: false },
+    { id: "credits", label: "Include Credits", isOpen: false },
+    { id: "liveProjectLink", label: "Live Project Link", isOpen: false },
+    { id: "imageUpload", label: "Upload Images", isOpen: false },
+    { id: "contributorName", label: "Contributor Name", isOpen: false },
+    {
+      id: "contributorGitHub",
+      label: "Contributor GitHub Profile",
+      isOpen: false,
+    },
   ]);
   const toggleField = (fieldId) => {
     const updatedFields = formFields.map((field) => {
@@ -167,6 +161,10 @@ const page = () => {
       return field;
     });
     setFormFields(updatedFields);
+  };
+
+  const toggleMarkdownEditor = () => {
+    setShowMarkdownEditor(!showMarkdownEditor);
   };
 
   const renderFormFields = () => {
@@ -208,27 +206,57 @@ const page = () => {
     ));
   };
 
+  const renderMarkdownEditor = () => {
+    if (showMarkdownEditor) {
+      return (
+        <div>
+          <MDEditor value={markdownContent} onChange={setMarkdownContent} />
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderMarkdownPreview = () => {
+    if (showMarkdownEditor) {
+      return (
+        <div>
+          <MDEditor.Markdown
+            source={generateMarkdown}
+            style={{ whiteSpace: "pre-wrap" }}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="p-4 flex ">
-        <div className="text-center bg-red-400 mx-12">
+      <div className="text-center bg-red-400 mx-12">
         <form onSubmit={handleSubmit}>
-        {renderFormFields()}
-        <button
+          {renderFormFields()}
+          <button
             type="submit"
             className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
             Submit
           </button>
-      </form>
+        </form>
+      </div>
 
-        </div>
+      <button
+        onClick={toggleMarkdownEditor}
+        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+      >
+        {showMarkdownEditor
+          ? "Hide Markdown and Preview"
+          : "Show Markdown and Preview"}
+      </button>
 
-<button>Show Markdown and Preview</button>
-      <MDEditor value={markdownContent} onChange={setMarkdownContent} />
-      <MDEditor.Markdown
-        source={generateMarkdown}
-        style={{ whiteSpace: "pre-wrap" }}
-      />
+   
+      {renderMarkdownEditor()}
+      {renderMarkdownPreview()}
     </div>
   );
 };
