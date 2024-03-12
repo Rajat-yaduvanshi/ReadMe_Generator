@@ -40,6 +40,11 @@ const page = () => {
       });
     }
   };
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    // Handle file upload, you can use FormData or any other method to manage the file.
+  };
+  
 
   const handleAddWorkItem = () => {
     setFormData({
@@ -91,7 +96,9 @@ const page = () => {
     if (formData.resumeLink) {
       markdown += `### Resume Link\n[${formData.resumeLink}](${formData.resumeLink})\n\n`;
     }
-  
+    if (formData.contributorName && formData.contributorGitHub) {
+      markdown += `## Contributors\n\n- [${formData.contributorName}](${formData.contributorGitHub})\n\n`;
+    }
     if (formData.funnyStatement) {
       markdown += `### Funny Statement\n${formData.funnyStatement}\n\n`;
     }
@@ -124,7 +131,9 @@ const page = () => {
   if (formData.credits) {
     markdown += `### Include Credits\n${formData.credits}\n\n`;
   }
-
+  if (formData.contributers) {
+    markdown += `### Include Contributers\n${formData.contributer}\n\n`;
+  }
   if (formData.liveProjectLink) {
     markdown += `### Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
   }
@@ -237,6 +246,47 @@ const page = () => {
     id="liveProjectLink"
     name="liveProjectLink"
     value={formData.liveProjectLink}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+  />
+</div>
+<div className="mb-4">
+  <label htmlFor="imageUpload" className="block text-sm font-medium text-gray-700">
+    Upload Image
+  </label>
+  <input
+    type="file"
+    id="imageUpload"
+    name="imageUpload"
+    accept="image/*" // Specify accepted file types
+    onChange={handleImageUpload}
+    className="mt-1 border border-gray-300 rounded-md w-full"
+  />
+</div>
+
+<div className="mb-4">
+  <label htmlFor="contributorName" className="block text-sm font-medium text-gray-700">
+    Contributor Name
+  </label>
+  <input
+    type="text"
+    id="contributorName"
+    name="contributorName"
+    value={formData.contributorName}
+    onChange={handleChange}
+    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+  />
+</div>
+
+<div className="mb-4">
+  <label htmlFor="contributorGitHub" className="block text-sm font-medium text-gray-700">
+    Contributor GitHub Profile
+  </label>
+  <input
+    type="url"
+    id="contributorGitHub"
+    name="contributorGitHub"
+    value={formData.contributorGitHub}
     onChange={handleChange}
     className="mt-1 p-2 border border-gray-300 rounded-md w-full"
   />
