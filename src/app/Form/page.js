@@ -16,7 +16,7 @@ const page = () => {
     contributors: [],
     imageUpload: null, // Added for image upload (initialize as null)
    
-    credits: '', // Added for credits
+    credits: [], // Added for credits
 
 
 
@@ -40,7 +40,22 @@ const page = () => {
         ...formData,
         contributors: updatedContributors,
       });
-    } else {
+    } else if(name.startsWith("credits")){
+     
+        const [field, index, property] = name.split("-");
+        const updatedCredits = [...formData.credits];
+        if (!updatedCredits[index]) {
+          updatedCredits[index] = {}; // Initialize if not present
+        }
+        updatedCredits[index][property] = value;
+        setFormData({
+          ...formData,
+          credits: updatedCredits,
+        });
+
+    }
+    
+    else {
       setFormData({
         ...formData,
         [name]: value,
@@ -95,11 +110,19 @@ const page = () => {
       markdown += `## ${sectionCounter}. How to Use the Project\n${formData.howToUse}\n\n`;
       sectionCounter++;
     }
-    if (formData.credits) {
+    if (formData.credits && formData.credits.length > 0) {
       tableOfContents += `${sectionCounter}. [Include Credits](#include-credits)\n`;
-      markdown += `## ${sectionCounter}. Include Credits\n${formData.credits}\n\n`;
+      markdown += `## ${sectionCounter}. Include Credits\n`;
+      
+      // Loop through credits and add their names and links in the desired format
+      formData.credits.forEach((credit, index) => {
+        markdown += `- [${credit.name}](${credit.link})\n`;
+      });
+  
+      markdown += '\n'; // Add a line break between credits and the next section
       sectionCounter++;
     }
+    
     if (formData.contributors && formData.contributors.length > 0) {
       tableOfContents += `${sectionCounter}. [Include Contributors](#include-contributors)\n`;
       markdown += `## ${sectionCounter}. Include Contributors\n`;
@@ -122,7 +145,14 @@ const page = () => {
   };
   
   
-
+  const addCredit = () => {
+    // Add a new credit object to the credits array
+    setFormData((prevData) => ({
+      ...prevData,
+      credits: [...prevData.credits, {}],
+    }));
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const generatedMarkdown = generateMarkdown();
@@ -205,6 +235,33 @@ const page = () => {
                   Add Contributor
                 </button>
               </div>
+            ) : field.id === "credits" ? (
+              <div>
+                {formData.credits.map((credit, index) => (
+                  <div key={index}>
+                    <input
+                      type="text"
+                      name={`credits-${index}-name`}
+                      value={credit.name || ""}
+                      placeholder="Credit"
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name={`credits-${index}-link`}
+                      value={credit.link || ""}
+                      placeholder="Credit Link"
+                      onChange={handleChange}
+                    />
+                  </div>
+                ))}
+                <button
+                  onClick={() => addCredit()}
+                  className="mt-2 text-blue-500"
+                >
+                  Add Credit
+                </button>
+              </div>
             ) : field.isMultiLine ? (
               <textarea
                 id={field.id}
@@ -229,6 +286,7 @@ const page = () => {
       </div>
     ));
   };
+  
   
   const addContributor = () => {
     // Add a new contributor object to the contributors array
