@@ -56,73 +56,62 @@ const page = () => {
 
   const generateMarkdown = () => {
     let markdown = `# ${formData.projectTitle}\n\n`;
-    markdown += `## Table of Contents\n`;
+    let sectionCounter = 1; // Initialize section counter
   
-    const sections = [];
-  
-    // Create a table of contents entry for each section
-    if (formData.projectDescription) {
-      sections.push("Project Description");
-    }
-    if (formData.frameworks) {
-      sections.push("Frameworks, Courses, etc.");
-    }
-    if (formData.liveProjectLink) {
-      sections.push("Live Project Link");
-    }
-    if (formData.tableOfContents) {
-      sections.push("Table of Contents");
-    }
-    if (formData.installInstructions) {
-      sections.push("How to Install and Run the Project");
-    }
-    if (formData.howToUse) {
-      sections.push("How to Use the Project");
-    }
-    if (formData.credits) {
-      sections.push("Include Credits");
-    }
-    if (formData.contributers) {
-      sections.push("Include Contributors");
-    }
-  
-    // Generate the table of contents links
-    sections.forEach((section) => {
-      const sectionId = section.replace(/\s+/g, "-").toLowerCase();
-      markdown += `- [${section}](#${sectionId})\n`;
-    });
+    // Initialize the table of contents
+    let tableOfContents = "";
   
     // Add section headers and content
     if (formData.projectDescription) {
-      markdown += `## Project Description\n${formData.projectDescription}\n\n`;
+      tableOfContents += `${sectionCounter}. [Project Description](#project-description)\n`;
+      markdown += `## ${sectionCounter}. Project Description\n${formData.projectDescription}\n\n`;
+      sectionCounter++;
     }
     if (formData.frameworks) {
-      markdown += `## Frameworks, Courses, etc.\n${formData.frameworks}\n\n`;
+      tableOfContents += `${sectionCounter}. [Frameworks, Courses, etc.](#frameworks-courses-etc)\n`;
+      markdown += `## ${sectionCounter}. Frameworks, Courses, etc.\n${formData.frameworks}\n\n`;
+      sectionCounter++;
     }
     if (formData.liveProjectLink) {
-      markdown += `## Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+      tableOfContents += `${sectionCounter}. [Live Project Link](#live-project-link)\n`;
+      markdown += `## ${sectionCounter}. Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+      sectionCounter++;
     }
     if (formData.tableOfContents) {
-      markdown += `## Table of Contents\n${formData.tableOfContents}\n\n`;
+      tableOfContents += `${sectionCounter}. [Table of Contents](#table-of-contents)\n`;
+      markdown += `## ${sectionCounter}. Table of Contents\n${formData.tableOfContents}\n\n`;
+      sectionCounter++;
     }
     if (formData.installInstructions) {
-      markdown += `## How to Install and Run the Project\n\n`;
+      tableOfContents += `${sectionCounter}. [How to Install and Run the Project](#how-to-install-and-run-the-project)\n`;
+      markdown += `## ${sectionCounter}. How to Install and Run the Project\n\n`;
       markdown += "```shell\n"; // Opening code block for shell/command-line
       markdown += formData.installInstructions + "\n";
       markdown += "```\n\n"; // Closing code block
+      sectionCounter++;
     }
     if (formData.howToUse) {
-      markdown += `## How to Use the Project\n${formData.howToUse}\n\n`;
+      tableOfContents += `${sectionCounter}. [How to Use the Project](#how-to-use-the-project)\n`;
+      markdown += `## ${sectionCounter}. How to Use the Project\n${formData.howToUse}\n\n`;
+      sectionCounter++;
     }
     if (formData.credits) {
-      markdown += `## Include Credits\n${formData.credits}\n\n`;
+      tableOfContents += `${sectionCounter}. [Include Credits](#include-credits)\n`;
+      markdown += `## ${sectionCounter}. Include Credits\n${formData.credits}\n\n`;
+      sectionCounter++;
     }
     if (formData.contributers) {
-      markdown += `## Include Contributors\n${formData.contributer}\n\n`;
+      tableOfContents += `${sectionCounter}. [Include Contributors](#include-contributors)\n`;
+      markdown += `## ${sectionCounter}. Include Contributors\n${formData.contributer}\n\n`;
+      sectionCounter++;
     }
+  
+    // Insert the table of contents at the beginning of the document
+    markdown = `# Table of Contents\n${tableOfContents}\n` + markdown;
   
     return markdown;
   };
+  
   
 
   const handleSubmit = (e) => {
@@ -251,8 +240,8 @@ const page = () => {
   };
 
   return (
-    <div className="p-4 flex ">
-      <div className="text-centermx-12">
+    <div className="p-4 flex">
+      <div className="text-center mx-12">
         <form onSubmit={handleSubmit}>
           {renderFormFields()}
           <button
@@ -261,10 +250,7 @@ const page = () => {
           >
             Submit
           </button>
-        </form>
-      </div>
-
-      <button
+          <button
         onClick={toggleMarkdownEditor}
         className="py-2 px-4 rounded-md"
       >
@@ -272,6 +258,11 @@ const page = () => {
           ? "Hide Markdown and Preview"
           : "Show Markdown and Preview"}
       </button>
+        </form>
+
+      </div>
+
+
 
    
       {renderMarkdownEditor()}
