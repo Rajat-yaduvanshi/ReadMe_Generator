@@ -100,11 +100,20 @@ const page = () => {
       markdown += `## ${sectionCounter}. Include Credits\n${formData.credits}\n\n`;
       sectionCounter++;
     }
-    if (formData.contributers) {
+    if (formData.contributors && formData.contributors.length > 0) {
       tableOfContents += `${sectionCounter}. [Include Contributors](#include-contributors)\n`;
-      markdown += `## ${sectionCounter}. Include Contributors\n${formData.contributer}\n\n`;
+      markdown += `## ${sectionCounter}. Include Contributors\n`;
+    
+      // Loop through contributors and add their names and GitHub profiles in the desired format
+      formData.contributors.forEach((contributor, index) => {
+        markdown += `- [${contributor.name}](${contributor.github})\n`;
+      });
+    
+      markdown += '\n'; // Add a line break between contributors and the next section
       sectionCounter++;
     }
+    
+    
   
     // Insert the table of contents at the beginning of the document
     markdown = `# Table of Contents\n${tableOfContents}\n` + markdown;
@@ -129,8 +138,8 @@ const page = () => {
     { id: 'credits', label: 'Include Credits', isMultiLine: true },
     { id: 'liveProjectLink', label: 'Live Project Link', isMultiLine: false },
     { id: 'imageUpload', label: 'Upload Image', isMultiLine: false },
-    { id: 'contributorName', label: 'Contributor Name', isMultiLine: false },
-    { id: 'contributorGitHub', label: 'Contributor GitHub Profile', isMultiLine: false },
+    { id: 'contributors', label: 'Contributor', isMultiLine: false },
+    // { id: 'contributorGitHub', label: 'Contributor GitHub Profile', isMultiLine: false },
   ]);
 
   const toggleField = (fieldId) => {
@@ -169,25 +178,33 @@ const page = () => {
         </div>
         {field.isOpen && (
           <div>
-            {field.id.startsWith("contributor") ? (
-              formData.contributors.map((contributor, index) => (
-                <div key={index}>
-                  <input
-                    type="text"
-                    name={`contributor-${index}-name`}
-                    value={contributor.name || ""}
-                    placeholder="Contributor Name"
-                    onChange={handleChange}
-                  />
-                  <input
-                    type="text"
-                    name={`contributor-${index}-github`}
-                    value={contributor.github || ""}
-                    placeholder="GitHub Profile"
-                    onChange={handleChange}
-                  />
-                </div>
-              ))
+            {field.id === "contributors" ? (
+              <div>
+                {formData.contributors.map((contributor, index) => (
+                  <div key={index}>
+                    <input
+                      type="text"
+                      name={`contributor-${index}-name`}
+                      value={contributor.name || ""}
+                      placeholder="Contributor Name"
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name={`contributor-${index}-github`}
+                      value={contributor.github || ""}
+                      placeholder="GitHub Profile"
+                      onChange={handleChange}
+                    />
+                  </div>
+                ))}
+                <button
+                  onClick={() => addContributor()}
+                  className="mt-2 text-blue-500"
+                >
+                  Add Contributor
+                </button>
+              </div>
             ) : field.isMultiLine ? (
               <textarea
                 id={field.id}
@@ -212,6 +229,15 @@ const page = () => {
       </div>
     ));
   };
+  
+  const addContributor = () => {
+    // Add a new contributor object to the contributors array
+    setFormData((prevData) => ({
+      ...prevData,
+      contributors: [...prevData.contributors, {}],
+    }));
+  };
+  
   
   
   const renderMarkdownEditor = () => {
