@@ -15,7 +15,7 @@ const page = () => {
     howToUse: '', // Added for how to use the project
     contributors: [],
     imageUpload: null, // Added for image upload (initialize as null)
-   
+    runInstructions :'',
     credits: [], // Added for credits
 
 
@@ -98,10 +98,18 @@ const page = () => {
       sectionCounter++;
     }
     if (formData.installInstructions) {
-      tableOfContents += `${sectionCounter}. [How to Install and Run the Project](#how-to-install-and-run-the-project)\n`;
-      markdown += `## ${sectionCounter}. How to Install and Run the Project\n\n`;
+      tableOfContents += `${sectionCounter}. [How to Install](#how-to-install-the-project)\n`;
+      markdown += `## ${sectionCounter}. How to Install the Project\n\n`;
       markdown += "```shell\n"; // Opening code block for shell/command-line
       markdown += formData.installInstructions + "\n";
+      markdown += "```\n\n"; // Closing code block
+      sectionCounter++;
+    }
+    if (formData.runInstructions) {
+      tableOfContents += `${sectionCounter}. [How to Run the Project](#how-to-run-the-project)\n`;
+      markdown += `## ${sectionCounter}. How to Run the Project\n\n`;
+      markdown += "```shell\n"; // Opening code block for shell/command-line
+      markdown += formData.runInstructions + "\n";
       markdown += "```\n\n"; // Closing code block
       sectionCounter++;
     }
@@ -162,8 +170,10 @@ const page = () => {
 
   const [formFields, setFormFields] = useState([
     { id: 'projectTitle', label: 'Project Title', isMultiLine: false },
+    { id: 'subtitle', label: 'Subtitle', isMultiLine: false },
     { id: 'projectDescription', label: 'Project Description', isMultiLine: true },
-    { id: 'installInstructions', label: 'How to Install and Run the Project', isMultiLine: true },
+    { id: 'installInstructions', label: 'How to Install', isMultiLine: true },
+    { id: 'runInstructions', label: 'How to Run', isMultiLine: true },
     { id: 'howToUse', label: 'How to Use the Project', isMultiLine: true },
     { id: 'credits', label: 'Include Credits', isMultiLine: true },
     { id: 'liveProjectLink', label: 'Live Project Link', isMultiLine: false },
