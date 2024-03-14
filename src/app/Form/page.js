@@ -56,53 +56,74 @@ const page = () => {
 
   const generateMarkdown = () => {
     let markdown = `# ${formData.projectTitle}\n\n`;
-
-    markdown += `### \n${formData.projectTitle}\n\n`;
-    markdown += `## ${formData.subtitle}\n\n`;
-
+    markdown += `## Table of Contents\n`;
+  
+    const sections = [];
+  
+    // Create a table of contents entry for each section
     if (formData.projectDescription) {
-      markdown += `### Project Description\n${formData.projectDescription}\n\n`;
+      sections.push("Project Description");
     }
     if (formData.frameworks) {
-      markdown += `### Frameworks, courses etc.\n${formData.frameworks}\n\n`;
+      sections.push("Frameworks, Courses, etc.");
     }
-
-
     if (formData.liveProjectLink) {
-      markdown += `### Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+      sections.push("Live Project Link");
     }
-
-
     if (formData.tableOfContents) {
-      markdown += `### Table of Contents\n${formData.tableOfContents}\n\n`;
+      sections.push("Table of Contents");
     }
-
     if (formData.installInstructions) {
-      markdown += "### How to Install and Run the Project\n\n";
+      sections.push("How to Install and Run the Project");
+    }
+    if (formData.howToUse) {
+      sections.push("How to Use the Project");
+    }
+    if (formData.credits) {
+      sections.push("Include Credits");
+    }
+    if (formData.contributers) {
+      sections.push("Include Contributors");
+    }
+  
+    // Generate the table of contents links
+    sections.forEach((section) => {
+      const sectionId = section.replace(/\s+/g, "-").toLowerCase();
+      markdown += `- [${section}](#${sectionId})\n`;
+    });
+  
+    // Add section headers and content
+    if (formData.projectDescription) {
+      markdown += `## Project Description\n${formData.projectDescription}\n\n`;
+    }
+    if (formData.frameworks) {
+      markdown += `## Frameworks, Courses, etc.\n${formData.frameworks}\n\n`;
+    }
+    if (formData.liveProjectLink) {
+      markdown += `## Live Project Link\n[${formData.liveProjectLink}](${formData.liveProjectLink})\n\n`;
+    }
+    if (formData.tableOfContents) {
+      markdown += `## Table of Contents\n${formData.tableOfContents}\n\n`;
+    }
+    if (formData.installInstructions) {
+      markdown += `## How to Install and Run the Project\n\n`;
       markdown += "```shell\n"; // Opening code block for shell/command-line
       markdown += formData.installInstructions + "\n";
       markdown += "```\n\n"; // Closing code block
     }
-
     if (formData.howToUse) {
-      markdown += `### How to Use the Project\n${formData.howToUse}\n\n`;
+      markdown += `## How to Use the Project\n${formData.howToUse}\n\n`;
     }
-
     if (formData.credits) {
-      markdown += `### Include Credits\n${formData.credits}\n\n`;
+      markdown += `## Include Credits\n${formData.credits}\n\n`;
     }
-    if (formData.contributors.length > 0) {
-      markdown += "### Contributors\n\n";
-      formData.contributors.forEach((contributor, index) => {
-        if (contributor.name && contributor.github) {
-          markdown += `${index + 1}. [${contributor.name}](${contributor.github})\n`;
-        }
-      });
-      markdown += "\n";
+    if (formData.contributers) {
+      markdown += `## Include Contributors\n${formData.contributer}\n\n`;
     }
-
+  
     return markdown;
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,7 +135,6 @@ const page = () => {
   const [formFields, setFormFields] = useState([
     { id: 'projectTitle', label: 'Project Title', isMultiLine: false },
     { id: 'projectDescription', label: 'Project Description', isMultiLine: true },
-    { id: 'tableOfContents', label: 'Table of Contents', isMultiLine: true },
     { id: 'installInstructions', label: 'How to Install and Run the Project', isMultiLine: true },
     { id: 'howToUse', label: 'How to Use the Project', isMultiLine: true },
     { id: 'credits', label: 'Include Credits', isMultiLine: true },
