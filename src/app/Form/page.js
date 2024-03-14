@@ -5,22 +5,18 @@ import MDEditor from "@uiw/react-md-editor";
 
 const page = () => {
   const [formData, setFormData] = useState({
-    projectTitle: '', // Added for project's title
-    subtitle: '',
-    liveProjectLink: '', // Added for live project link
-    projectDescription: '', // Added for project description
-    tableOfContents: '', // Added for table of contents
-    frameworks: '',
-    installInstructions: '', // Added for installation instructions
-    howToUse: '', // Added for how to use the project
+    projectTitle: "", // Added for project's title
+    subtitle: "",
+    liveProjectLink: "", // Added for live project link
+    projectDescription: "", // Added for project description
+    tableOfContents: "", // Added for table of contents
+    frameworks: [],
+    installInstructions: "", // Added for installation instructions
+    howToUse: "", // Added for how to use the project
     contributors: [],
-    imageUpload: null, // Added for image upload (initialize as null)
-    runInstructions :'',
+    imageUploads: [], // Added for image upload (initialize as null)
+    runInstructions: "",
     credits: [], // Added for credits
-
-
-
-    
   });
   const [showMarkdownEditor, setShowMarkdownEditor] = useState(false);
 
@@ -28,7 +24,7 @@ const page = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name.startsWith("contributor")) {
       const [field, index, property] = name.split("-");
       const updatedContributors = [...formData.contributors];
@@ -40,43 +36,53 @@ const page = () => {
         ...formData,
         contributors: updatedContributors,
       });
-    } else if(name.startsWith("credits")){
-     
-        const [field, index, property] = name.split("-");
-        const updatedCredits = [...formData.credits];
-        if (!updatedCredits[index]) {
-          updatedCredits[index] = {}; // Initialize if not present
-        }
-        updatedCredits[index][property] = value;
-        setFormData({
-          ...formData,
-          credits: updatedCredits,
-        });
-
-    }
-    
-    else {
+    } else if (name.startsWith("credits")) {
+      const [field, index, property] = name.split("-");
+      const updatedCredits = [...formData.credits];
+      if (!updatedCredits[index]) {
+        updatedCredits[index] = {}; // Initialize if not present
+      }
+      updatedCredits[index][property] = value;
+      setFormData({
+        ...formData,
+        credits: updatedCredits,
+      });
+    } else {
       setFormData({
         ...formData,
         [name]: value,
       });
     }
   };
-  
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    // Handle file upload, you can use FormData or any other method to manage the file.
+    const files = e.target.files;
+
+    // Convert the FileList to an array
+    const imageArray = Array.from(files);
+
+    // Update the state with the new array of images
+    setFormData({
+      ...formData,
+      imageUploads: imageArray,
+    });
   };
 
   const generateMarkdown = () => {
     let markdown = `# ${formData.projectTitle}\n\n`;
     let sectionCounter = 1; // Initialize section counter
-  
+
     // Initialize the table of contents
     let tableOfContents = "";
-  
+
     // Add section headers and content
+
+    if (formData.subtitle) {
+      tableOfContents += `${sectionCounter}. [Subtitle](#subtitle)\n`;
+      markdown += `## ${sectionCounter}. Subtitle\n${formData.subtitle}\n\n`;
+      sectionCounter++;
+    }
+
     if (formData.projectDescription) {
       tableOfContents += `${sectionCounter}. [Project Description](#project-description)\n`;
       markdown += `## ${sectionCounter}. Project Description\n${formData.projectDescription}\n\n`;
@@ -121,38 +127,50 @@ const page = () => {
     if (formData.credits && formData.credits.length > 0) {
       tableOfContents += `${sectionCounter}. [Include Credits](#include-credits)\n`;
       markdown += `## ${sectionCounter}. Include Credits\n`;
-      
+
       // Loop through credits and add their names and links in the desired format
       formData.credits.forEach((credit, index) => {
         markdown += `- [${credit.name}](${credit.link})\n`;
       });
-  
-      markdown += '\n'; // Add a line break between credits and the next section
+
+      if (formData.imageUploads.length > 0) {
+        tableOfContents += `${sectionCounter}. [Images](#images)\n`;
+        markdown += `## ${sectionCounter}. Images\n`;
+      
+        // Loop through the uploaded images and create markdown for each
+        formData.imageUploads.forEach((image, index) => {
+          markdown += `![Image ${index + 1}](URL_TO_IMAGE)\n`;
+          // You should replace 'URL_TO_IMAGE' with the actual URL or path to each image.
+        });
+      
+        markdown += '\n'; // Add a line break after images
+        sectionCounter++;
+      }
+      
+
+      markdown += "\n"; // Add a line break between credits and the next section
       sectionCounter++;
     }
-    
+
     if (formData.contributors && formData.contributors.length > 0) {
       tableOfContents += `${sectionCounter}. [Include Contributors](#include-contributors)\n`;
       markdown += `## ${sectionCounter}. Include Contributors\n`;
-    
+
       // Loop through contributors and add their names and GitHub profiles in the desired format
       formData.contributors.forEach((contributor, index) => {
         markdown += `- [${contributor.name}](${contributor.github})\n`;
       });
-    
-      markdown += '\n'; // Add a line break between contributors and the next section
+
+      markdown += "\n"; // Add a line break between contributors and the next section
       sectionCounter++;
     }
-    
-    
-  
+
     // Insert the table of contents at the beginning of the document
     markdown = `# Table of Contents\n${tableOfContents}\n` + markdown;
-  
+
     return markdown;
   };
-  
-  
+
   const addCredit = () => {
     // Add a new credit object to the credits array
     setFormData((prevData) => ({
@@ -160,7 +178,7 @@ const page = () => {
       credits: [...prevData.credits, {}],
     }));
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const generatedMarkdown = generateMarkdown();
@@ -169,16 +187,20 @@ const page = () => {
   };
 
   const [formFields, setFormFields] = useState([
-    { id: 'projectTitle', label: 'Project Title', isMultiLine: false },
-    { id: 'subtitle', label: 'Subtitle', isMultiLine: false },
-    { id: 'projectDescription', label: 'Project Description', isMultiLine: true },
-    { id: 'installInstructions', label: 'How to Install', isMultiLine: true },
-    { id: 'runInstructions', label: 'How to Run', isMultiLine: true },
-    { id: 'howToUse', label: 'How to Use the Project', isMultiLine: true },
-    { id: 'credits', label: 'Include Credits', isMultiLine: true },
-    { id: 'liveProjectLink', label: 'Live Project Link', isMultiLine: false },
-    { id: 'imageUpload', label: 'Upload Image', isMultiLine: false },
-    { id: 'contributors', label: 'Contributor', isMultiLine: false },
+    { id: "projectTitle", label: "Project Title", isMultiLine: false },
+    { id: "subtitle", label: "Subtitle", isMultiLine: false },
+    {
+      id: "projectDescription",
+      label: "Project Description",
+      isMultiLine: true,
+    },
+    { id: "installInstructions", label: "How to Install", isMultiLine: true },
+    { id: "runInstructions", label: "How to Run", isMultiLine: true },
+    { id: "howToUse", label: "How to Use the Project", isMultiLine: true },
+    { id: "credits", label: "Include Credits", isMultiLine: true },
+    { id: "liveProjectLink", label: "Live Project Link", isMultiLine: false },
+    { id: "imageUpload", label: "Upload Image", isMultiLine: false },
+    { id: "contributors", label: "Contributor", isMultiLine: false },
     // { id: 'contributorGitHub', label: 'Contributor GitHub Profile', isMultiLine: false },
   ]);
 
@@ -208,7 +230,7 @@ const page = () => {
       contributors: updatedContributors,
     });
   };
-  
+
   const removeCredit = (indexToRemove) => {
     const updatedCredits = formData.credits.filter(
       (_, index) => index !== indexToRemove
@@ -218,7 +240,6 @@ const page = () => {
       credits: updatedCredits,
     });
   };
-  
 
   const renderFormFields = () => {
     return formFields.map((field) => (
@@ -265,10 +286,7 @@ const page = () => {
                     </button>
                   </div>
                 ))}
-                <button
-                  onClick={addContributor}
-                  className="mt-2 text-blue-500"
-                >
+                <button onClick={addContributor} className="mt-2 text-blue-500">
                   Add Contributor
                 </button>
               </div>
@@ -298,10 +316,7 @@ const page = () => {
                     </button>
                   </div>
                 ))}
-                <button
-                  onClick={addCredit}
-                  className="mt-2 text-blue-500"
-                >
+                <button onClick={addCredit} className="mt-2 text-blue-500">
                   Add Credit
                 </button>
               </div>
@@ -313,6 +328,15 @@ const page = () => {
                 onChange={handleChange}
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full h-40 focus:outline-none focus:border-blue-500"
                 rows="6"
+              />
+            ) : field.id === "imageUpload" ? (
+              <input
+                type="file"
+                id="imageUpload"
+                name="imageUpload"
+                multiple // Add the 'multiple' attribute to allow multiple file selection
+                onChange={handleImageUpload}
+                className="mt-1"
               />
             ) : (
               <input
@@ -329,9 +353,7 @@ const page = () => {
       </div>
     ));
   };
-  
-  
-  
+
   const addContributor = () => {
     // Add a new contributor object to the contributors array
     setFormData((prevData) => ({
@@ -339,9 +361,7 @@ const page = () => {
       contributors: [...prevData.contributors, {}],
     }));
   };
-  
-  
-  
+
   const renderMarkdownEditor = () => {
     if (showMarkdownEditor) {
       return (
@@ -379,20 +399,16 @@ const page = () => {
             Submit
           </button>
           <button
-        onClick={toggleMarkdownEditor}
-        className="py-2 px-4 rounded-md"
-      >
-        {showMarkdownEditor
-          ? "Hide Markdown and Preview"
-          : "Show Markdown and Preview"}
-      </button>
+            onClick={toggleMarkdownEditor}
+            className="py-2 px-4 rounded-md"
+          >
+            {showMarkdownEditor
+              ? "Hide Markdown and Preview"
+              : "Show Markdown and Preview"}
+          </button>
         </form>
-
       </div>
 
-
-
-   
       {renderMarkdownEditor()}
       {renderMarkdownPreview()}
     </div>
