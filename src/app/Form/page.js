@@ -189,6 +189,27 @@ const page = () => {
     setShowMarkdownEditor(!showMarkdownEditor);
   };
 
+  const removeContributor = (indexToRemove) => {
+    const updatedContributors = formData.contributors.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setFormData({
+      ...formData,
+      contributors: updatedContributors,
+    });
+  };
+  
+  const removeCredit = (indexToRemove) => {
+    const updatedCredits = formData.credits.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setFormData({
+      ...formData,
+      credits: updatedCredits,
+    });
+  };
+  
+
   const renderFormFields = () => {
     return formFields.map((field) => (
       <div key={field.id} className="mb-4">
@@ -226,10 +247,16 @@ const page = () => {
                       placeholder="GitHub Profile"
                       onChange={handleChange}
                     />
+                    <button
+                      onClick={() => removeContributor(index)}
+                      className="mt-2 text-red-500"
+                    >
+                      Remove Contributor
+                    </button>
                   </div>
                 ))}
                 <button
-                  onClick={() => addContributor()}
+                  onClick={addContributor}
                   className="mt-2 text-blue-500"
                 >
                   Add Contributor
@@ -253,10 +280,16 @@ const page = () => {
                       placeholder="Credit Link"
                       onChange={handleChange}
                     />
+                    <button
+                      onClick={() => removeCredit(index)}
+                      className="mt-2 text-red-500"
+                    >
+                      Remove Credit
+                    </button>
                   </div>
                 ))}
                 <button
-                  onClick={() => addCredit()}
+                  onClick={addCredit}
                   className="mt-2 text-blue-500"
                 >
                   Add Credit
@@ -286,6 +319,7 @@ const page = () => {
       </div>
     ));
   };
+  
   
   
   const addContributor = () => {
