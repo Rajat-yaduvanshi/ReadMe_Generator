@@ -386,6 +386,25 @@ const page = () => {
     }
     return null;
   };
+  const downloadMarkdownFile = () => {
+    // Generate the Markdown content
+    const generatedMarkdown = generateMarkdown();
+
+    // Create a Blob object with the Markdown content
+    const blob = new Blob([generatedMarkdown], { type: "text/plain" });
+
+    // Create a temporary URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create an anchor element to trigger the download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "README.md";
+    a.click();
+
+    // Release the URL object
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="p-4 flex">
@@ -397,6 +416,12 @@ const page = () => {
             className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
             Submit
+          </button>
+          <button
+            onClick={downloadMarkdownFile} // Add the download function here
+            className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
+          >
+            Download README.md
           </button>
           <button
             onClick={toggleMarkdownEditor}
