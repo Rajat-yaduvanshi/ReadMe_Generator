@@ -18,7 +18,7 @@ const page = () => {
     runInstructions: "",
     credits: [], // Added for credits
   });
-  const [showMarkdownEditor, setShowMarkdownEditor] = useState(false);
+  const [showMarkdownEditor, setShowMarkdownEditor] = useState(true);
 
   const [markdownContent, setMarkdownContent] = useState("");
 
@@ -136,17 +136,16 @@ const page = () => {
       if (formData.imageUploads.length > 0) {
         tableOfContents += `${sectionCounter}. [Images](#images)\n`;
         markdown += `## ${sectionCounter}. Images\n`;
-      
+
         // Loop through the uploaded images and create markdown for each
         formData.imageUploads.forEach((image, index) => {
           markdown += `![Image ${index + 1}](URL_TO_IMAGE)\n`;
           // You should replace 'URL_TO_IMAGE' with the actual URL or path to each image.
         });
-      
-        markdown += '\n'; // Add a line break after images
+
+        markdown += "\n"; // Add a line break after images
         sectionCounter++;
       }
-      
 
       markdown += "\n"; // Add a line break between credits and the next section
       sectionCounter++;
@@ -243,7 +242,7 @@ const page = () => {
 
   const renderFormFields = () => {
     return formFields.map((field) => (
-      <div key={field.id} className="mb-4">
+      <div key={field.id} className="mb-4 ">
         <div className="flex items-center justify-between">
           <label
             htmlFor={field.id}
@@ -386,6 +385,21 @@ const page = () => {
     }
     return null;
   };
+  const handleCopyMarkdown = () => {
+    const generatedMarkdown = generateMarkdown();
+    
+    // Use the Clipboard API to copy the Markdown content to the clipboard
+    navigator.clipboard.writeText(generatedMarkdown)
+      .then(() => {
+        // Success message or any other action
+        alert("Markdown copied to clipboard!");
+      })
+      .catch((error) => {
+        // Handle any errors that may occur during copying
+        console.error("Error copying Markdown: ", error);
+      });
+  };
+
   const downloadMarkdownFile = () => {
     // Generate the Markdown content
     const generatedMarkdown = generateMarkdown();
@@ -407,8 +421,8 @@ const page = () => {
   };
 
   return (
-    <div className="p-4 flex">
-      <div className="text-center mx-12">
+    <div className="p-4 flex h-screen w-full bg-orange-100">
+      <div className="w-1/2 bg-orange-200 rounded-md shadow-xl flex items-center justify-center">
         <form onSubmit={handleSubmit}>
           {renderFormFields()}
           <button
@@ -417,25 +431,29 @@ const page = () => {
           >
             Submit
           </button>
-          <button
+        </form>
+      </div>
+      <div className="m-2 p-2 h-full w-1/2">
+        <button onClick={toggleMarkdownEditor}   className="py-2 px-4 mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+          {showMarkdownEditor
+            ? "Hide Preview"
+            : "Show Preview"}
+        </button>
+        {renderMarkdownEditor()}
+        {renderMarkdownPreview()}
+        <button
             onClick={downloadMarkdownFile} // Add the download function here
-            className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600"
+            className=" py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
             Download README.md
           </button>
           <button
-            onClick={toggleMarkdownEditor}
-            className="py-2 px-4 rounded-md"
+            onClick={handleCopyMarkdown} // Add the download function here
+            className="m-2 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
-            {showMarkdownEditor
-              ? "Hide Markdown and Preview"
-              : "Show Markdown and Preview"}
-          </button>
-        </form>
+           Copy
+           </button>
       </div>
-
-      {renderMarkdownEditor()}
-      {renderMarkdownPreview()}
     </div>
   );
 };
