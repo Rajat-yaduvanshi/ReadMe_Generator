@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import {FcDownload, FcFile} from "react-icons/fc";
 import MDEditor from "@uiw/react-md-editor";
 
 const page = () => {
@@ -434,25 +434,28 @@ const page = () => {
         </form>
       </div>
       <div className="m-2 p-2 h-full w-1/2">
-        <button onClick={toggleMarkdownEditor}   className="py-2 px-4 mb-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+      <span className="flex">
+        <button onClick={toggleMarkdownEditor}    className="m-2 p-2 text-sm bg-blue-200 rounded-sm flex justify-center items-center hover:bg-blue-300">
           {showMarkdownEditor
             ? "Hide Preview"
             : "Show Preview"}
         </button>
-        {renderMarkdownEditor()}
-        {renderMarkdownPreview()}
         <button
             onClick={downloadMarkdownFile} // Add the download function here
-            className=" py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            className="m-2 p-2 text-sm bg-blue-200 rounded-sm flex justify-center items-center hover:bg-blue-300"
           >
-            Download README.md
+      Download   <FcDownload/>
           </button>
           <button
             onClick={handleCopyMarkdown} // Add the download function here
-            className="m-2 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            className="m-2 p-2 text-sm bg-blue-200 rounded-sm flex justify-center items-center hover:bg-blue-300"
           >
-           Copy
+          Copy <FcFile/>
            </button>
+           </span>
+        {renderMarkdownEditor()}
+        {renderMarkdownPreview()}
+
       </div>
     </div>
   );
